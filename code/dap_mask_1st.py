@@ -24,6 +24,7 @@ import cv2
 import torch.nn as nn
 from collections import namedtuple
 import argparse
+import soundfile as sf
 
 parser = argparse.ArgumentParser(description='DAP mask interaction')
 
@@ -361,18 +362,18 @@ class Separation(object):
             save_image("mask1+mask2_{}".format(step), x, self.output_path)
 
             a1_wav = istft_reconstruction(self.current_result.sound1[0], self.phase)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep1_{}.wav'.format(step)), a1_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_sep1_{}.wav'.format(step)), a1_wav, self.audRate)
             a2_wav = istft_reconstruction(self.current_result.sound2[0], self.phase)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep2_{}.wav'.format(step)), a2_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_sep2_{}.wav'.format(step)), a2_wav, self.audRate)
 
     def finalize(self):
         save_graph(self.image_name + "_psnr", self.psnrs, self.output_path)
         save_image(self.image_name + "_sound1", magnitude2heatmap(self.best_result.sound1), self.output_path)
         save_image(self.image_name + "_sound2", magnitude2heatmap(self.best_result.sound2), self.output_path)
         a1_wav = istft_reconstruction(self.best_result.sound1[0], self.phase)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep1.wav'), a1_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_sep1.wav'), a1_wav, self.audRate)
         a2_wav = istft_reconstruction(self.best_result.sound2[0], self.phase)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep2.wav'), a2_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_sep2.wav'), a2_wav, self.audRate)
 
         save_image(self.image_name + "_sound1_out", magnitude2heatmap(self.best_result.sound1_out), self.output_path)
         save_image(self.image_name + "_sound2_out", magnitude2heatmap(self.best_result.sound2_out), self.output_path)
@@ -429,9 +430,9 @@ if __name__ == "__main__":
         s = Separation('sounds', path_out, amp_mix, phase_mix, audRate, seg_num)
         Flag = s.optimize()
     s.finalize()
-    librosa.output.write_wav(os.path.join(path_out, 'gt1.wav'), audio_seg1, audRate)
-    librosa.output.write_wav(os.path.join(path_out, 'gt2.wav'), audio_seg2, audRate)
-    librosa.output.write_wav(os.path.join(path_out, 'mixture.wav'), mix_wav, audRate)
+    sf.write(os.path.join(path_out, 'gt1.wav'), audio_seg1, audRate)
+    sf.write(os.path.join(path_out, 'gt2.wav'), audio_seg2, audRate)
+    sf.write(os.path.join(path_out, 'mixture.wav'), mix_wav, audRate)
     cv2.imwrite(os.path.join(path_out, 'spec_a1.jpg'), mag1)
     cv2.imwrite(os.path.join(path_out, 'spec_a2.jpg'), mag2)
 

@@ -29,6 +29,7 @@ from collections import namedtuple
 from torch.autograd import Variable, Function
 from torch.optim.lr_scheduler import StepLR
 import argparse
+import soundfile as sf
 
 parser = argparse.ArgumentParser(description='BSS')
 
@@ -524,16 +525,16 @@ class Separation(object):
             save_image("mask1+mask2+mask3+mask4_{}".format(step), x, self.output_path)
 
             a1_wav = istft_reconstruction(self.current_result.sound1[0], self.phase1)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep1_{}.wav'.format(step)), a1_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_sep1_{}.wav'.format(step)), a1_wav, self.audRate)
 
             a2_wav = istft_reconstruction(self.current_result.sound2[0], self.phase1)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep2_{}.wav'.format(step)), a2_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_sep2_{}.wav'.format(step)), a2_wav, self.audRate)
 
             a3_wav = istft_reconstruction(self.current_result.sound3[0], self.phase2)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep3_{}.wav'.format(step)), a3_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_sep3_{}.wav'.format(step)), a3_wav, self.audRate)
 
             a4_wav = istft_reconstruction(self.current_result.sound4[0], self.phase3)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep4_{}.wav'.format(step)), a4_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_sep4_{}.wav'.format(step)), a4_wav, self.audRate)
 
     def finalize(self):
         save_graph(self.image_name + "_psnr", self.psnrs, self.output_path)
@@ -543,13 +544,13 @@ class Separation(object):
         save_image(self.image_name + "_sound4", magnitude2heatmap(self.best_result.sound4), self.output_path)
 
         a1_wav = istft_reconstruction(self.best_result.sound1[0], self.phase1)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep1.wav'), a1_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_sep1.wav'), a1_wav, self.audRate)
         a2_wav = istft_reconstruction(self.best_result.sound2[0], self.phase1)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep2.wav'), a2_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_sep2.wav'), a2_wav, self.audRate)
         a3_wav = istft_reconstruction(self.best_result.sound3[0], self.phase2)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep3.wav'), a3_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_sep3.wav'), a3_wav, self.audRate)
         a4_wav = istft_reconstruction(self.best_result.sound4[0], self.phase3)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_sep4.wav'), a4_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_sep4.wav'), a4_wav, self.audRate)
 
         save_image(self.image_name + "_sound1_out", magnitude2heatmap(self.best_result.sound1_out), self.output_path)
         save_image(self.image_name + "_sound2_out", magnitude2heatmap(self.best_result.sound2_out), self.output_path)
@@ -590,9 +591,9 @@ if __name__ == "__main__":
     amp_mix2, phase_mix2, mix_wav2 = audio_process(audio2, audRate, audLen, seg_num, start_time)
     amp_mix3, phase_mix3, mix_wav3 = audio_process(audio3, audRate, audLen, seg_num, start_time)
 
-    librosa.output.write_wav('output/cosep/mixture1.wav', mix_wav1, audRate)
-    librosa.output.write_wav('output/cosep/mixture2.wav', mix_wav2, audRate)
-    librosa.output.write_wav('output/cosep/mixture3.wav', mix_wav3, audRate)
+    sf.write('output/cosep/mixture1.wav', mix_wav1, audRate)
+    sf.write('output/cosep/mixture2.wav', mix_wav2, audRate)
+    sf.write('output/cosep/mixture3.wav', mix_wav3, audRate)
     # Sep
     for i in range(seg_num):
         amp_mix1[i] = np.expand_dims(amp_mix1[i], axis=0)

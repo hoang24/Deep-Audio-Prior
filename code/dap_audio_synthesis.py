@@ -27,6 +27,7 @@ import torch.nn as nn
 from collections import namedtuple
 from torch.autograd import Variable, Function
 import argparse
+import soundfile as sf
 
 parser = argparse.ArgumentParser(description='DAP audio synthesis')
 
@@ -248,14 +249,14 @@ class Separation(object):
             save_image("mask_{}".format(step), x_l, self.output_path)
 
             a1_wav = istft_reconstruction(self.current_result.sound1[0], self.phase)
-            librosa.output.write_wav(os.path.join(self.output_path, 'sound_{}.wav'.format(step)), a1_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, 'sound_{}.wav'.format(step)), a1_wav, self.audRate)
 
 
     def finalize(self):
         save_graph(self.image_name + "_psnr", self.psnrs, self.output_path)
         save_image(self.image_name + "_sound", magnitude2heatmap(self.best_result.sound1), self.output_path)
         a1_wav = istft_reconstruction(self.best_result.sound1[0], self.phase)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound.wav'), a1_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound.wav'), a1_wav, self.audRate)
 
         save_image(self.image_name + "_sound_out", magnitude2heatmap(self.best_result.sound1_out), self.output_path)
         save_image(self.image_name + "_mask", self.best_result.mask1, self.output_path)
@@ -266,7 +267,7 @@ class Separation(object):
         save_image(self.image_name + "_input", magnitude2heatmap(np.concatenate(self.images, axis=-1)), self.output_path)
         x = np.concatenate(self.images, axis=-1)
         in_wav = istft_reconstruction(x[0], self.phase)
-        librosa.output.write_wav(os.path.join(self.output_path, 'sound_input.wav'), in_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, 'sound_input.wav'), in_wav, self.audRate)
 
 
 SeparationResult = namedtuple("SeparationResult",
@@ -300,4 +301,4 @@ if __name__ == "__main__":
     s = Separation('sounds', path_out, amp, phase, audRate, seg_num)
     s.optimize()
     s.finalize()
-    librosa.output.write_wav(os.path.join(path_out, 'original.wav'), mix_wav, audRate)
+    sf.write(os.path.join(path_out, 'original.wav'), mix_wav, audRate)
