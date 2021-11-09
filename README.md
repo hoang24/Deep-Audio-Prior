@@ -36,7 +36,7 @@ For the second round with mask interaction, we have two additional parameters: d
 We provide one example that refines separation results from a dog and violin mixture with an annotated deactivation binary map for the dog sound:
 ```bash
     $ cd ~/code/
-    $ python dap_mask_2rd.py --input_mix data/mask/violin_dog.wav --dea_map data/mask/ckpt/mask2_dea.npy --dea_map-id 2 --output output/mask
+    $ python dap_mask_2rd.py --input_mix data/mask/violin_dog.wav --dea_map data/mask/ckpt/mask2_dea.npy --dea_map_id 2 --output output/mask
  ```
 
 ### Audio Textual Synthesis
