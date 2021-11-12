@@ -17,7 +17,7 @@ from net.losses import ExclusionLoss, NonZeroLoss, FreqGradLoss, BinaryLoss, Non
 from net.noise import get_video_noise
 from utils.image_io import *
 from utils.audio_io import *
-from skimage.measure import compare_mse
+from skimage.metrics import mean_squared_error
 import numpy as np
 import torch
 import cv2
@@ -395,14 +395,14 @@ if __name__ == "__main__":
     # Method 1: scipy.io.wavfile (need modify source code below)
     # audRate, ori_audio = wavfile.read(test_mix)
     # num_sample = audLen * audRate
-    # audio = ori_audio[0:N_trim, :]
+    # audio = ori_audio[0:num_sample, :]
 
     # Method 2: librosa.load
     audRate = 44100
     y, sr = librosa.load(test_mix, mono=False)
     ori_audio = librosa.resample(y, sr, audRate)
     num_sample = audLen * audRate
-    audio = ori_audio[:, 0:N_trim]
+    audio = ori_audio[:, 0:num_sample]
 
     if audRate * audLen > audio.shape[1]:
         n = int(audLen * audRate / audio.shape[1]) + 1

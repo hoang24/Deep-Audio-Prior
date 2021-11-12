@@ -17,7 +17,7 @@ from net.losses import ExclusionLoss, NonZeroLoss, FreqGradLoss, BinaryLoss, Non
 from net.noise import get_video_noise
 from utils.image_io import *
 from utils.audio_io import *
-from skimage.measure import compare_mse
+from skimage.metrics import mean_squared_error
 import numpy as np
 import torch
 import cv2
