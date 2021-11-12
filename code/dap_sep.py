@@ -381,7 +381,7 @@ SeparationResult = namedtuple("SeparationResult", ['mask1', 'mask2', 'sound1', '
 if __name__ == "__main__":
 
     # params
-    audRate = 11000
+    audRate = 44100
     start_time = 0
     audLen = 12
     seg_num = 24  #
