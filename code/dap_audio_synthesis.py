@@ -226,7 +226,7 @@ class Separation(object):
             mask1_out_np = (torch_to_np(torch.cat(torch.chunk(self.mask1_out, self.N, dim=0), dim=-1)) * 255.).astype(
                 np.uint8)
             im_np = torch_to_np(torch.cat(torch.chunk(self.images_torch[::2], self.N, dim=0), dim=-1))
-            mse = compare_mse(im_np, torch_to_np(torch.cat(torch.chunk(self.sound1[::2], self.N, dim=0), dim=-1)))
+            mse = mean_squared_error(im_np, torch_to_np(torch.cat(torch.chunk(self.sound1[::2], self.N, dim=0), dim=-1)))
 
             self.psnrs.append(mse)
             self.current_result = SeparationResult(mask1=mask1_out_np[0],  sound1=sound1_out_np,

@@ -481,9 +481,9 @@ class Separation(object):
             im_np1 = torch_to_np(torch.cat(torch.chunk(self.images_torch1, self.N, dim=0), dim=-1))
             im_np2 = torch_to_np(torch.cat(torch.chunk(self.images_torch2, self.N, dim=0), dim=-1))
             im_np3 = torch_to_np(torch.cat(torch.chunk(self.images_torch3, self.N, dim=0), dim=-1))
-            mse1 = compare_mse(im_np1, sound1_out_np + sound2_out_np)
-            mse2 = compare_mse(im_np2, sound1_out_np + sound3_out_np)
-            mse3 = compare_mse(im_np3, sound1_out_np + sound4_out_np)
+            mse1 = mean_squared_error(im_np1, sound1_out_np + sound2_out_np)
+            mse2 = mean_squared_error(im_np2, sound1_out_np + sound3_out_np)
+            mse3 = mean_squared_error(im_np3, sound1_out_np + sound4_out_np)
 
             mse = (mse1 + mse2 + mse3)/3
             self.psnrs.append(mse)
