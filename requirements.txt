@@ -9,3 +9,4 @@ Pillow
 scikit-image
 numba
 scikit-video
+noisereduce

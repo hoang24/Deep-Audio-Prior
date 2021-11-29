@@ -600,7 +600,16 @@ if __name__ == "__main__":
         amp_mix2[i] = np.expand_dims(amp_mix2[i], axis=0)
         amp_mix3[i] = np.expand_dims(amp_mix3[i], axis=0)
 
-    s = Separation('sounds', path_out, amp_mix1, amp_mix2, amp_mix3, phase_mix1, phase_mix2, phase_mix3, audRate, seg_num)
+    s = Separation(image_name='sounds',
+                   output_path=path_out,
+                   amp_mix1=amp_mix1,
+                   amp_mix2=amp_mix2,
+                   amp_mix3=amp_mix3,
+                   phase_mix1=phase_mix1,
+                   phase_mix2=phase_mix2,
+                   phase_mix3=phase_mix3,
+                   audRate=audRate,
+                   numSeg=seg_num)
     s.optimize()
     s.finalize()
 
