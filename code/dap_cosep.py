@@ -34,14 +34,12 @@ import soundfile as sf
 parser = argparse.ArgumentParser(description='BSS')
 
 # Data specifications
-parser.add_argument('--input1', type=str, default='data/cosep/audiojungle/01.mp3',
-                    help='input sound 1')
-parser.add_argument('--input2', type=str, default='data/cosep/audiojungle/02.mp3',
-                    help='input sound 2')
-parser.add_argument('--input3', type=str, default='data/cosep/audiojungle/03.mp3',
-                    help='input sound 3')
-parser.add_argument('--output', type=str, default='output/cosep',
-                    help='results')
+parser.add_argument('--input1', type=str, default='data/cosep/audiojungle/01.mp3', help='input sound 1')
+parser.add_argument('--input2', type=str, default='data/cosep/audiojungle/02.mp3', help='input sound 2')
+parser.add_argument('--input3', type=str, default='data/cosep/audiojungle/03.mp3', help='input sound 3')
+parser.add_argument('--output', type=str, default='output/cosep', help='results')
+parser.add_argument('--aud_rate', type=int, default=22050, help='desired sampling rate to be resampled')
+parser.add_argument('--aud_len', type=int, default=8, help='desired length of audio')
 args = parser.parse_args()
 
 class Separation(object):
@@ -574,9 +572,9 @@ SeparationResult = namedtuple("SeparationResult",
 if __name__ == "__main__":
 
     # params
-    audRate = 11000
-    audLen = 12
-    seg_num = 24
+    audRate = args.aud_rate
+    audLen = args.aud_len
+    seg_num = args.aud_len * 2
     start_time = 0
 
     # load three sounds with audiojungle watermaker
