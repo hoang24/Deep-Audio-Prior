@@ -38,17 +38,20 @@ parser.add_argument('--input1', type=str, default='data/cosep/audiojungle/01.mp3
 parser.add_argument('--input2', type=str, default='data/cosep/audiojungle/02.mp3', help='input sound 2')
 parser.add_argument('--input3', type=str, default='data/cosep/audiojungle/03.mp3', help='input sound 3')
 parser.add_argument('--output', type=str, default='output/cosep', help='results')
-parser.add_argument('--aud_rate', type=int, default=22050, help='desired sampling rate to be resampled')
+parser.add_argument('--aud_rate', type=int, default=22000, help='desired sampling rate to be resampled')
 parser.add_argument('--aud_len', type=int, default=8, help='desired length of audio')
 args = parser.parse_args()
 
 class Separation(object):
-    def __init__(self, image_name, output_path, amp_mix1, amp_mix2, amp_mix3, phase_mix1, phase_mix2,
+    def __init__(self, image_name, output_path, audio1, audio2, audio3, amp_mix1, amp_mix2, amp_mix3, phase_mix1, phase_mix2,
                  phase_mix3, audRate, numSeg, plot_during_training=True, show_every=500,
                  ckpt="ckpt", num_iter=5000,
                  original_mask1=None, original_mask2=None,original_mask3=None, original_mask4=None,
                  original_sound1=None, original_sound2=None, original_sound3=None, original_sound4=None):
         self.output_path = output_path
+        self.audio1 = audio1
+        self.audio2 = audio2
+        self.audio3 = audio3
         self.image1 = amp_mix1
         self.image2 = amp_mix2
         self.image3 = amp_mix3
@@ -523,16 +526,16 @@ class Separation(object):
             save_image("mask1+mask2+mask3+mask4_{}".format(step), x, self.output_path)
 
             a1_wav = istft_reconstruction(self.current_result.sound1[0], self.phase1)
-            sf.write(os.path.join(self.output_path, 'sound_sep1_{}.wav'.format(step)), a1_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, f"cosep1_{self.audio1.split('/')[-4]}_noise_{step}.wav"), a1_wav, self.audRate)
 
             a2_wav = istft_reconstruction(self.current_result.sound2[0], self.phase1)
-            sf.write(os.path.join(self.output_path, 'sound_sep2_{}.wav'.format(step)), a2_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, f"cosep2_{self.audio1.split('/')[-4]}_{self.audio1.split('/')[-3]}_{step}.wav"), a2_wav, self.audRate)
 
             a3_wav = istft_reconstruction(self.current_result.sound3[0], self.phase2)
-            sf.write(os.path.join(self.output_path, 'sound_sep3_{}.wav'.format(step)), a3_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, f"cosep3_{self.audio2.split('/')[-4]}_{self.audio2.split('/')[-3]}_{step}.wav"), a3_wav, self.audRate)
 
             a4_wav = istft_reconstruction(self.current_result.sound4[0], self.phase3)
-            sf.write(os.path.join(self.output_path, 'sound_sep4_{}.wav'.format(step)), a4_wav, self.audRate)
+            sf.write(os.path.join(self.output_path, f"cosep4_{self.audio3.split('/')[-4]}_{self.audio3.split('/')[-3]}_{step}.wav"), a4_wav, self.audRate)
 
     def finalize(self):
         save_graph(self.image_name + "_psnr", self.psnrs, self.output_path)
@@ -542,13 +545,13 @@ class Separation(object):
         save_image(self.image_name + "_sound4", magnitude2heatmap(self.best_result.sound4), self.output_path)
 
         a1_wav = istft_reconstruction(self.best_result.sound1[0], self.phase1)
-        sf.write(os.path.join(self.output_path, 'sound_sep1.wav'), a1_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, f"cosep1_{self.audio1.split('/')[-4]}_noise.wav"), a1_wav, self.audRate)
         a2_wav = istft_reconstruction(self.best_result.sound2[0], self.phase1)
-        sf.write(os.path.join(self.output_path, 'sound_sep2.wav'), a2_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, f"cosep2_{self.audio1.split('/')[-4]}_{self.audio1.split('/')[-3]}.wav"), a2_wav, self.audRate)
         a3_wav = istft_reconstruction(self.best_result.sound3[0], self.phase2)
-        sf.write(os.path.join(self.output_path, 'sound_sep3.wav'), a3_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, f"cosep3_{self.audio2.split('/')[-4]}_{self.audio2.split('/')[-3]}.wav"), a3_wav, self.audRate)
         a4_wav = istft_reconstruction(self.best_result.sound4[0], self.phase3)
-        sf.write(os.path.join(self.output_path, 'sound_sep4.wav'), a4_wav, self.audRate)
+        sf.write(os.path.join(self.output_path, f"cosep4_{self.audio3.split('/')[-4]}_{self.audio3.split('/')[-3]}.wav"), a4_wav, self.audRate)
 
         save_image(self.image_name + "_sound1_out", magnitude2heatmap(self.best_result.sound1_out), self.output_path)
         save_image(self.image_name + "_sound2_out", magnitude2heatmap(self.best_result.sound2_out), self.output_path)
@@ -600,6 +603,9 @@ if __name__ == "__main__":
 
     s = Separation(image_name='sounds',
                    output_path=path_out,
+                   audio1=audio1,
+                   audio2=audio2,
+                   audio3=audio3,
                    amp_mix1=amp_mix1,
                    amp_mix2=amp_mix2,
                    amp_mix3=amp_mix3,
